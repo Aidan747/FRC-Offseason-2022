@@ -26,7 +26,15 @@ public final class Constants {
     }
     public static final class MISC {
         public static final String[] keyNames = {
-            "yes",
+            "null",
+            "A",
+            "B",
+            "X",
+            "Y",
+            "LB",
+            "RB",
+            "back",
+            "start"
         };
     }
 }

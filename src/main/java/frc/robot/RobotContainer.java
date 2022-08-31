@@ -4,15 +4,18 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 // we need to begin importing directly from embedded classes otherwise it looks ugly LOL
 import frc.robot.Constants.MOTOR_IO;
+import frc.robot.Constants.MISC;
 
 public class RobotContainer {
   /* 
@@ -20,6 +23,7 @@ public class RobotContainer {
     Logic should be used only in subsystems/commands.
   */
   // Battery = back of robot
+  public HashMap<String, JoystickButton> binds = new HashMap<String, JoystickButton>();
   private WPI_TalonFX leftOne = new WPI_TalonFX(MOTOR_IO.LEFT_ONE); // look at how nice that is
   private WPI_TalonFX leftTwo = new WPI_TalonFX(MOTOR_IO.LEFT_TWO);
 
@@ -27,9 +31,10 @@ public class RobotContainer {
   private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
 
   // ingenious strat using a for loop?!?!?!?!?!!?
-
   public RobotContainer() {
     // Configure the button bindings
+    for (int i = 1; i < MISC.keyNames.length; i++) {
+    }
     configureButtonBindings();
   }
 
