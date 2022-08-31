@@ -4,21 +4,30 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and button mappings) should be declared here.
- */
-public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
+// we need to begin importing directly from embedded classes otherwise it looks ugly LOL
+import frc.robot.Constants.MOTOR_IO;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+public class RobotContainer {
+  /* 
+    Base level classes (motors, subsystems, etc) are declared here
+    Logic should be used only in subsystems/commands.
+  */
+  // Battery = back of robot
+  private WPI_TalonFX leftOne = new WPI_TalonFX(MOTOR_IO.LEFT_ONE); // look at how nice that is
+  private WPI_TalonFX leftTwo = new WPI_TalonFX(MOTOR_IO.LEFT_TWO);
+
+  private WPI_TalonFX rightOne = new WPI_TalonFX(MOTOR_IO.RIGHT_ONE);
+  private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
+
+  // ingenious strat using a for loop AND DICTIONARY?!!?!?!?!?!
+
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
