@@ -9,6 +9,7 @@ import java.util.HashMap;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -30,7 +31,13 @@ public class RobotContainer {
   private WPI_TalonFX rightOne = new WPI_TalonFX(MOTOR_IO.RIGHT_ONE);
   private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
 
+  public static final Joystick joystick = new Joystick(0);
+
+  // ingenious strat using a for loop AND DICTIONARY?!!?!?!?!?!
+
+
   // ingenious strat using a for loop?!?!?!?!?!!?
+
   public RobotContainer() {
     // Configure the button bindings
     for (int i = 1; i < MISC.keyNames.length; i++) {
