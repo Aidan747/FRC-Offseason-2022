@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -21,5 +23,10 @@ public final class Constants {
         // right motor IO
         public static final int RIGHT_ONE = 9;
         public static final int RIGHT_TWO = 8;
+    }
+    public static final class MISC {
+        public static final String[] keyNames = {
+            "yes",
+        };
     }
 }

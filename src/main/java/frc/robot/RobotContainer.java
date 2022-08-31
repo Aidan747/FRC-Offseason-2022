@@ -26,7 +26,7 @@ public class RobotContainer {
   private WPI_TalonFX rightOne = new WPI_TalonFX(MOTOR_IO.RIGHT_ONE);
   private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
 
-  // ingenious strat using a for loop AND DICTIONARY?!!?!?!?!?!
+  // ingenious strat using a for loop?!?!?!?!?!!?
 
   public RobotContainer() {
     // Configure the button bindings
