@@ -6,14 +6,10 @@ package frc.robot;
 
 import java.util.HashMap;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
+// Constants class, usable anywhere if imported. 
+// DO NOT SOLELY IMPORT THE CONSTANTS CLASS
+// It looks ugly and refs get very long very quickly.
+
 public final class Constants {
     public static final class MOTOR_IO {
         // motor ids go from back to front (closest to battery -> 1)
@@ -24,6 +20,7 @@ public final class Constants {
         public static final int RIGHT_ONE = 9;
         public static final int RIGHT_TWO = 8;
     }
+    
     public static final class MISC {
         public static final String[] keyNames = {
             "null",
@@ -37,4 +34,5 @@ public final class Constants {
             "start"
         };
     }
+    
 }
