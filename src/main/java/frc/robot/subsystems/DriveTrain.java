@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 public class DriveTrain extends SubsystemBase {
   /** Creates a new DriveTrain. */
 
+  public boolean testing = false;
+  
   private WPI_TalonFX leftMotorOne;
   private WPI_TalonFX leftMotorTwo;
   private WPI_TalonFX rightMotorOne;
@@ -28,10 +30,23 @@ public class DriveTrain extends SubsystemBase {
     this.right = new MotorControllerGroup(leftMotorOne, rightMotorTwo);
     
     drive = new DifferentialDrive(left, right);
+    config();
+    
+    // if we are testing, enable testing mode.
+    if (testing) {
+      enableTesting();
+    }
+    
   }
   
   // we should start doing this with our classes, just so we can easily change configs without the mess in the decl.
   public void config() {
+    left.setInverted(false);
+    right.setInverted(true);
+  }
+  
+  // runs testing software to monitor and control specific aspects about the subsystems.
+  public void enableTesting() {
     
   }
 
