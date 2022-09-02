@@ -1,65 +1,61 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+// Java base imports
 import java.util.HashMap;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+//WPILib imports
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-// we need to begin importing directly from embedded classes otherwise it looks ugly LOL
+
+// Vendor imports
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+// Specific constants imports
 import frc.robot.Constants.MOTOR_IO;
 import frc.robot.Constants.MISC;
 
 public class RobotContainer {
   /* 
     Base level classes (motors, subsystems, etc) are declared here
-    Logic should be used only in subsystems/commands.
+    Logic should be used only in subsystems/commands
   */
-  // Battery = back of robot
-  public HashMap<String, JoystickButton> binds = new HashMap<String, JoystickButton>();
-  private WPI_TalonFX leftOne = new WPI_TalonFX(MOTOR_IO.LEFT_ONE); // look at how nice that is
+  // current reference point: Battery = back of robot
+  
+  // DriveTrain motors  
+  private WPI_TalonFX leftOne = new WPI_TalonFX(MOTOR_IO.LEFT_ONE);
   private WPI_TalonFX leftTwo = new WPI_TalonFX(MOTOR_IO.LEFT_TWO);
 
   private WPI_TalonFX rightOne = new WPI_TalonFX(MOTOR_IO.RIGHT_ONE);
   private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
 
+  // Joystick (is static so it can be ref anywhere)
   public static final Joystick joystick = new Joystick(0);
 
-  // ingenious strat using a for loop AND DICTIONARY?!!?!?!?!?!
-
-
-  // ingenious strat using a for loop?!?!?!?!?!!?
+  // init of JoystickButton hashmap. Usage in the @RobotContainer method
+  public HashMap<String, JoystickButton> binds = new HashMap<String, JoystickButton>();
 
   public RobotContainer() {
-    // Configure the button bindings
+    // bind JoystickButtons to string keys in the hashmap
+    // usage: (binds.get({name}) -> JoystickButton), names are located in Constants under MISC, usable anywhere with a valid
+    // RobotContainer object (there should only be one)
     for (int i = 1; i < MISC.keyNames.length; i++) {
+      binds.put(MISC.keyNames[i], new JoystickButton(joystick, i));
     }
+    
+    // Configure the button bindings
     configureButtonBindings();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
+  // Configures button bindings using hashmap
   private void configureButtonBindings() {}
-
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+  
+  // Returns the currently used SendableChooser auto profile (names in Constants)
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
+    // InstantCommand being returned right now for simplicity sake (does nothing)
     return new InstantCommand();
   }
 }
