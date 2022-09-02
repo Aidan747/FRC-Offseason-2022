@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.util.WPIUtilJNI;
@@ -16,13 +12,27 @@ public class DriveTrain extends SubsystemBase {
   private WPI_TalonFX leftMotorTwo;
   private WPI_TalonFX rightMotorOne;
   private WPI_TalonFX rightMotorTwo;
-
+  
+  private MotorControllerGroup left;
+  private MotorControllerGroup right;
+  
+  private DifferentialDrive drive;
   
   public DriveTrain(WPI_TalonFX leftMotorOne, WPI_TalonFX leftMotorTwo, WPI_TalonFX rightMotorOne, WPI_TalonFX rightMotorTwo) {
     this.leftMotorOne = leftMotorOne;
     this.leftMotorTwo = leftMotorTwo;
     this.rightMotorOne = rightMotorOne;
     this.rightMotorTwo = rightMotorTwo;
+    
+    this.left = new MotorControllerGroup(leftMotorOne, leftMotorTwo);
+    this.right = new MotorControllerGroup(leftMotorOne, rightMotorTwo);
+    
+    drive = new DifferentialDrive(left, right);
+  }
+  
+  // we should start doing this with our classes, just so we can easily change configs without the mess in the decl.
+  public void config() {
+    
   }
 
   @Override
