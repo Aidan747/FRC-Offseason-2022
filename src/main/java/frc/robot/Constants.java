@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.HashMap;
-
 // Constants class, usable anywhere if imported. 
 // DO NOT SOLELY IMPORT THE CONSTANTS CLASS
 // It looks ugly and refs get very long very quickly.
@@ -18,7 +16,7 @@ public final class Constants {
     }
     
     public static final class MISC {
-        public static final String[] keyNames = {
+        public static final String[] KEY_NAMES = {
             "null",
             "A",
             "B",
@@ -30,5 +28,8 @@ public final class Constants {
             "start"
         };
     }
-    
+
+    public static final class DRIVE_CONSTANTS {
+        public static final double MAX_COEFF = .8;
+    }
 }
