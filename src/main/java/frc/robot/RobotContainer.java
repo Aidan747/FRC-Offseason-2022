@@ -51,7 +51,7 @@ public class RobotContainer {
     // usage: (binds.get({name}) -> JoystickButton), names are located in Constants under MISC, usable anywhere with a valid
     // RobotContainer object (there should only be one)
     for (int i = 1; i < MISC.KEY_NAMES.length; i++) {
-      xboxBinds.put(MISC.KEY_NAMES[i], new JoystickButton(joystick, i));
+      xboxBinds.put(MISC.KEY_NAMES[i], new JoystickButton(xbox, i));
     }
     
     // default commands: check repo stuff for guides
