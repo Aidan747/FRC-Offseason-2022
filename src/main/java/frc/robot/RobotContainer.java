@@ -56,7 +56,7 @@ public class RobotContainer {
     
     // default commands: check repo stuff for guides
     drive.setDefaultCommand(new RunCommand(
-      () -> drive.joyDrive(joystick.getY(), joystick.getZ()), drive)
+      () -> drive.joyDrive(-joystick.getY(), joystick.getZ()), drive)
     );
     // Configure the button bindings
     configureButtonBindings();
