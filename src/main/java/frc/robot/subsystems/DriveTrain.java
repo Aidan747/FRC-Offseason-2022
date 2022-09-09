@@ -32,8 +32,8 @@ public class DriveTrain extends SubsystemBase {
     this.right = new MotorControllerGroup(this.rightMotorOne, this.rightMotorTwo);
     
     drive = new DifferentialDrive(left, right);
-    config();
     
+    config();
     // if we are testing, enable testing mode.
     if (testing) {
       enableTesting();
@@ -45,11 +45,14 @@ public class DriveTrain extends SubsystemBase {
   public void config() {
     left.setInverted(false);
     right.setInverted(true);
+    
   }
   
   // runs testing software to monitor and control specific aspects about the subsystems.
   public void enableTesting() {
-    
+    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
+    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
+    tab.add("drivetrain", this);
   }
 
   public void voltsDrive(double leftVs, double rightVs) {
