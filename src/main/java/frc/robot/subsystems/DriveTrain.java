@@ -74,11 +74,16 @@ public class DriveTrain extends SubsystemBase {
 
   public double getEncoderLeft() {
     // returns in meters
-    return (leftMotorTwo.getSelectedSensorPosition() / DRIVE_CONSTANTS.ENCODER_TICKS) * DRIVE_CONSTANTS.GEAR_RATIO;
+    // pos / encoder ticks = shaft rotations
+    // shaft rotations * gearing = wheel rotations
+    // wheel rotations * circumference = meters travelled
+    double wheelRotations = (leftMotorTwo.getSelectedSensorPosition() / DRIVE_CONSTANTS.ENCODER_TICKS) * DRIVE_CONSTANTS.GEAR_RATIO;
+    return wheelRotations * DRIVE_CONSTANTS.WHEEL_CIRCUMFRENCE;
   }
 
   public double getEncoderRight() {
-    return rightMotorTwo.getSelectedSensorPosition();
+    double wheelRotations = (rightMotorTwo.getSelectedSensorPosition() / DRIVE_CONSTANTS.ENCODER_TICKS) * DRIVE_CONSTANTS.GEAR_RATIO;
+    return wheelRotations * DRIVE_CONSTANTS.WHEEL_CIRCUMFRENCE;
   }
 
   @Override
