@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -45,7 +47,8 @@ public class DriveTrain extends SubsystemBase {
   public void config() {
     left.setInverted(false);
     right.setInverted(true);
-    
+    rightMotorTwo.setSelectedSensorPosition(0);
+    leftMotorTwo.setSelectedSensorPosition(0);
   }
   
   // runs testing software to monitor and control specific aspects about the subsystems.
@@ -67,6 +70,14 @@ public class DriveTrain extends SubsystemBase {
     double fY = Math.min(Y, DRIVE_CONSTANTS.MAX_COEFF);
     double fZ = Math.min(Z, DRIVE_CONSTANTS.MAX_COEFF);
     drive.tankDrive(fY, fZ);
+  }
+
+  public double getEncoderLeft() {
+    return leftMotorTwo.getSelectedSensorPosition();
+  }
+
+  public double getEncoderRight() {
+    return rightMotorTwo.getSelectedSensorPosition();
   }
 
   @Override

@@ -31,5 +31,8 @@ public final class Constants {
 
     public static final class DRIVE_CONSTANTS {
         public static final double MAX_COEFF = .8;
+        public static final double GEAR_RATIO = 0;
+        public static final double ENCODER_TICKS = 0;
+        
     }
 }
