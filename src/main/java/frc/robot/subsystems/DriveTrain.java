@@ -54,8 +54,8 @@ public class DriveTrain extends SubsystemBase {
   // runs testing software to monitor and control specific aspects about the subsystems.
   public void enableTesting() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
     tab.add("drivetrain", this);
+    
   }
 
   public void voltsDrive(double leftVs, double rightVs) {
@@ -73,7 +73,8 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double getEncoderLeft() {
-    return leftMotorTwo.getSelectedSensorPosition();
+    // returns in meters
+    return (leftMotorTwo.getSelectedSensorPosition() / DRIVE_CONSTANTS.ENCODER_TICKS) * DRIVE_CONSTANTS.GEAR_RATIO;
   }
 
   public double getEncoderRight() {
