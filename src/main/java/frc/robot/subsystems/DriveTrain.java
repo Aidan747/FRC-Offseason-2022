@@ -55,7 +55,8 @@ public class DriveTrain extends SubsystemBase {
   public void enableTesting() {
     ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
     tab.add("drivetrain", this);
-    
+    tab.addNumber("left encoder", () -> getEncoderLeft());
+    tab.addNumber("right encoder", () -> getEncoderRight());
   }
 
   public void voltsDrive(double leftVs, double rightVs) {

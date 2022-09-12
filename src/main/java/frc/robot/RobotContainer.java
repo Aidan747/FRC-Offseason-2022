@@ -17,6 +17,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 // in package imports
 import frc.robot.Constants.MOTOR_IO;
+import frc.robot.commands.EncoderDrivePrelim;
 import frc.robot.Constants.MISC;
 import frc.robot.subsystems.DriveTrain;
 
@@ -59,7 +60,7 @@ public class RobotContainer {
       () -> drive.joyDrive(-joystick.getY(), joystick.getZ()), drive)
     );
 
-    
+    xboxBinds.get("A").toggleWhenPressed(new EncoderDrivePrelim(drive, 2, 4)); // drives 2 meters @ 4 volts
 
     // Configure the button bindings
     configureButtonBindings();

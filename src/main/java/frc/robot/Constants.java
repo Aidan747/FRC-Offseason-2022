@@ -1,5 +1,7 @@
 package frc.robot;
 
+import edu.wpi.first.math.util.Units;
+
 // Constants class, usable anywhere if imported. 
 // DO NOT SOLELY IMPORT THE CONSTANTS CLASS
 // It looks ugly and refs get very long very quickly.
@@ -31,8 +33,11 @@ public final class Constants {
 
     public static final class DRIVE_CONSTANTS {
         public static final double MAX_COEFF = .8;
-        public static final double GEAR_RATIO = 0;
-        public static final double ENCODER_TICKS = 0;
-        
+        public static final double GEAR_RATIO = 1 / 10.71;
+        public static final double ENCODER_TICKS = 2048.0;
+        public static final double WHEEL_DIAMETER = 6; // in inches 
+        public static final double WHEEL_CIRCUMFRENCE = Units.inchesToMeters(WHEEL_DIAMETER) * Math.PI;
+        // circ = d*pi
+
     }
 }

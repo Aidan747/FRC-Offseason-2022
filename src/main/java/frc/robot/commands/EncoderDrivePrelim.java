@@ -24,7 +24,7 @@ public class EncoderDrivePrelim extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.initEncoder = (drive.getEncoderLeft() + drive.getEncoderRight()) / 2;
+    this.initEncoder = drive.getEncoderLeft() / 2;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,6 +42,6 @@ public class EncoderDrivePrelim extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return dist <= Math.abs(((drive.getEncoderLeft() + drive.getEncoderRight()) / 2) - initEncoder);
+    return dist <= Math.abs(drive.getEncoderLeft() - initEncoder); // 10 <= 0 --> false
   }
 }
