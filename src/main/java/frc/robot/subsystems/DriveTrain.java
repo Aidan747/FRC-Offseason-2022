@@ -1,11 +1,12 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import frc.robot.Constants.DRIVE_CONSTANTS;
 
@@ -33,7 +34,7 @@ public class DriveTrain extends SubsystemBase {
     this.left = new MotorControllerGroup(this.leftMotorOne, this.leftMotorTwo);
     this.right = new MotorControllerGroup(this.rightMotorOne, this.rightMotorTwo);
     
-    drive = new DifferentialDrive(left, right);
+    this.drive = new DifferentialDrive(left, right);
     
     config();
     // if we are testing, enable testing mode.
@@ -86,7 +87,7 @@ public class DriveTrain extends SubsystemBase {
     double wheelRotations = (rightMotorTwo.getSelectedSensorPosition() / DRIVE_CONSTANTS.ENCODER_TICKS) * DRIVE_CONSTANTS.GEAR_RATIO;
     return wheelRotations * DRIVE_CONSTANTS.WHEEL_CIRCUMFRENCE;
   }
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

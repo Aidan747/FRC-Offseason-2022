@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
-// Vendor imports
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+// Vendor imports
 import com.kauailabs.navx.frc.AHRS;
 
 // in package imports
