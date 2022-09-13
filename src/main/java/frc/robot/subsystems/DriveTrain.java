@@ -1,9 +1,12 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.revrobotics.CANSparkMax;
 
 import frc.robot.Constants.DRIVE_CONSTANTS;
 
@@ -12,17 +15,17 @@ public class DriveTrain extends SubsystemBase {
 
   public boolean testing = false;
   
-  private WPI_TalonFX leftMotorOne;
-  private WPI_TalonFX leftMotorTwo;
-  private WPI_TalonFX rightMotorOne;
-  private WPI_TalonFX rightMotorTwo;
+  private CANSparkMax leftMotorOne;
+  private CANSparkMax leftMotorTwo;
+  private CANSparkMax rightMotorOne;
+  private CANSparkMax rightMotorTwo;
   
   private MotorControllerGroup left;
   private MotorControllerGroup right;
   
-  private DifferentialDrive drive;
+  private MecanumDrive drive;
   
-  public DriveTrain(WPI_TalonFX leftMotorOne, WPI_TalonFX leftMotorTwo, WPI_TalonFX rightMotorOne, WPI_TalonFX rightMotorTwo) {
+  public DriveTrain(CANSparkMax leftMotorOne, CANSparkMax leftMotorTwo, CANSparkMax rightMotorOne, CANSparkMax rightMotorTwo) {
     this.leftMotorOne = leftMotorOne;
     this.leftMotorTwo = leftMotorTwo;
     this.rightMotorOne = rightMotorOne;
@@ -31,8 +34,10 @@ public class DriveTrain extends SubsystemBase {
     this.left = new MotorControllerGroup(this.leftMotorOne, this.leftMotorTwo);
     this.right = new MotorControllerGroup(this.rightMotorOne, this.rightMotorTwo);
     
-    drive = new DifferentialDrive(left, right);
+    drive = new MecanumDrive(leftMotorTwo, leftMotorOne, rightMotorTwo, rightMotorOne);
     
+    Shuffleboard.getTab("DriveTrain").add("Mecanum", drive);
+
     config();
     // if we are testing, enable testing mode.
     if (testing) {
@@ -43,16 +48,11 @@ public class DriveTrain extends SubsystemBase {
   
   // we should start doing this with our classes, just so we can easily change configs without the mess in the decl.
   public void config() {
-    left.setInverted(false);
-    right.setInverted(true);
     
   }
   
   // runs testing software to monitor and control specific aspects about the subsystems.
   public void enableTesting() {
-    ShuffleboardTab tab = Shuffleboard.getTab("Drivetrain");
-    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
-    tab.add("drivetrain", this);
   }
 
   public void voltsDrive(double leftVs, double rightVs) {
@@ -62,11 +62,12 @@ public class DriveTrain extends SubsystemBase {
     drive.feed();
   }
 
-  public void joyDrive(double Y, double Z) {
+  public void joyDrive(double Y, double X, double Z) {
     // add slope later?
     double fY = Math.min(Y, DRIVE_CONSTANTS.MAX_COEFF);
+    double fX = -Math.min(Z, DRIVE_CONSTANTS.MAX_COEFF);
     double fZ = Math.min(Z, DRIVE_CONSTANTS.MAX_COEFF);
-    drive.tankDrive(fY, fZ);
+    drive.driveCartesian(fY, fX, fZ);
   }
 
   @Override

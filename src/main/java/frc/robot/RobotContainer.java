@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 // Vendor imports
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 // in package imports
 import frc.robot.Constants.MOTOR_IO;
@@ -28,11 +30,11 @@ public class RobotContainer {
   // current reference point: Battery = back of robot
   
   // DriveTrain motors  
-  private WPI_TalonFX leftOne = new WPI_TalonFX(MOTOR_IO.LEFT_ONE);
-  private WPI_TalonFX leftTwo = new WPI_TalonFX(MOTOR_IO.LEFT_TWO);
+  private CANSparkMax leftOne = new CANSparkMax(MOTOR_IO.LEFT_ONE, MotorType.kBrushed);
+  private CANSparkMax leftTwo = new CANSparkMax(MOTOR_IO.LEFT_TWO, MotorType.kBrushed);
 
-  private WPI_TalonFX rightOne = new WPI_TalonFX(MOTOR_IO.RIGHT_ONE);
-  private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
+  private CANSparkMax rightOne = new CANSparkMax(MOTOR_IO.RIGHT_ONE, MotorType.kBrushed);
+  private CANSparkMax rightTwo = new CANSparkMax(MOTOR_IO.RIGHT_TWO, MotorType.kBrushed);
 
   private DriveTrain drive = new DriveTrain(leftOne, leftTwo, rightOne, rightTwo);
 
@@ -56,7 +58,7 @@ public class RobotContainer {
     
     // default commands: check repo stuff for guides
     drive.setDefaultCommand(new RunCommand(
-      () -> drive.joyDrive(-joystick.getY(), joystick.getZ()), drive)
+      () -> drive.joyDrive(xbox.getLeftX(), xbox.getLeftY(), xbox.getRightX()), drive)
     );
     // Configure the button bindings
     configureButtonBindings();
