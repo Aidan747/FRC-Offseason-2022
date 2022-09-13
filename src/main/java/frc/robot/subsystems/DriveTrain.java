@@ -1,12 +1,19 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+// Java base imports
 
+//WPILib imports
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+// Vendor imports
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+// in package imports
+import frc.robot.subsystems.DriveTrain;
 
 import frc.robot.Constants.DRIVE_CONSTANTS;
 
