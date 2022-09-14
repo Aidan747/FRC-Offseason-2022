@@ -38,8 +38,7 @@ public class RobotContainer {
   private DriveTrain drive = new DriveTrain(leftOne, leftTwo, rightOne, rightTwo);
 
   // Joystick (is static so it can be ref anywhere)
-  public static final Joystick joystick = new Joystick(0);
-  public static final XboxController xbox = new XboxController(1);
+  public static final XboxController xbox = new XboxController(0);
 
   // AHRS (navx), static for ref anywhere
   public static final AHRS navX = new AHRS();
@@ -57,7 +56,7 @@ public class RobotContainer {
     
     // default commands: check repo stuff for guides
     drive.setDefaultCommand(new RunCommand(
-      () -> drive.joyDrive(xbox.getLeftX(), xbox.getLeftY(), xbox.getRightX()), drive)
+      () -> drive.joyDrive(xbox.getLeftX(), xbox.getRightX(), xbox.getRightY() * .5), drive)
     );
     // Configure the button bindings
     configureButtonBindings();
