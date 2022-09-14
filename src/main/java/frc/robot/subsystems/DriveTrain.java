@@ -62,9 +62,6 @@ public class DriveTrain extends SubsystemBase {
 
   public void joyDrive(double Y, double X, double Z) {
     // add slope later?
-    double fY = Math.min(Y, DRIVE_CONSTANTS.MAX_COEFF);
-    double fX = Z;
-    double fZ = Math.min(Z, DRIVE_CONSTANTS.MAX_COEFF);
     drive.driveCartesian(Y, X, Z);
     drive.feedWatchdog();
   }
