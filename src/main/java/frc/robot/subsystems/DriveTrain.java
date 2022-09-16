@@ -76,16 +76,14 @@ public class DriveTrain extends SubsystemBase {
 
   public void joyDrive(double Y, double Z) {
     // add slope later?
-    double fY = Math.min(Y, DRIVE_CONSTANTS.MAX_COEFF);
-    double fZ = Math.min(Z, DRIVE_CONSTANTS.MAX_COEFF);
-    drive.tankDrive(fY, fZ);
+    drive.arcadeDrive(Y * DRIVE_CONSTANTS.MAX_COEFF, Z * DRIVE_CONSTANTS.MAX_COEFF);
   }
 
   public double getEncoderLeft() {
     // returns in meters
     // pos / encoder ticks = shaft rotations
     // shaft rotations * gearing = wheel rotations
-    // wheel rotations * circumference = meters travelled
+    // wheel rotations * circumference = meters traveled
     double wheelRotations = (leftMotorTwo.getSelectedSensorPosition() / DRIVE_CONSTANTS.ENCODER_TICKS) * DRIVE_CONSTANTS.GEAR_RATIO;
     return wheelRotations * DRIVE_CONSTANTS.WHEEL_CIRCUMFRENCE;
   }

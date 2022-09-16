@@ -26,13 +26,13 @@ public class EncoderDrivePrelim extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.initEncoder = drive.getEncoderLeft() / 2;
+    this.initEncoder = drive.getEncoderLeft();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drive.voltsDrive(speedVs, -speedVs);
+    drive.voltsDrive(speedVs, speedVs);
   }
 
   // Called once the command ends or is interrupted.
