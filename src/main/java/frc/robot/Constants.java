@@ -18,17 +18,19 @@ public final class Constants {
             public static final int RIGHT_TWO = 8;
         }
         public static final class INDEX_IO {
-            public static final int TOP = 5;
-            public static final int BOTTOM = 3;
+            public static final int TOP = 14;
+            public static final int INTAKE_WHEELS = 3;
+            public static final int BOTTOM = 1;
+            public static final int DRAWBRIDGE = 4;
         }
     }
     
     public static final class MISC {
         public static final String[] KEY_NAMES = {
             "null",
+            "X",
             "A",
             "B",
-            "X",
             "Y",
             "LB",
             "RB",

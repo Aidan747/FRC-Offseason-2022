@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 // Vendor imports
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 
@@ -26,14 +27,18 @@ public class Indexer extends SubsystemBase {
   public boolean testing = true;
 
   private WPI_TalonFX top;
-  private WPI_TalonFX bottom;
+  private WPI_TalonSRX bottom;
+  private WPI_TalonSRX intakeWheels;
+  private WPI_TalonSRX drawbridgeMotor;
 
   private DigitalInput beam;
 
-  public Indexer(WPI_TalonFX top, WPI_TalonFX bottom, DigitalInput beam) {
+  public Indexer(WPI_TalonFX top, WPI_TalonSRX bottom, WPI_TalonSRX intakeWheels, WPI_TalonSRX drawbridgeMotor, DigitalInput beam) {
     this.top = top;
     this.bottom = bottom;
     this.beam = beam;
+    this.intakeWheels = intakeWheels;
+    this.drawbridgeMotor = drawbridgeMotor;
 
     config();
     
@@ -55,6 +60,14 @@ public class Indexer extends SubsystemBase {
     top.setVoltage(INDEXER_CONSTANTS.MAX_VOLTS * percent);
   }
 
+  public void setIntakeWheelSpeed(double percent) {
+    intakeWheels.setVoltage(INDEXER_CONSTANTS.MAX_VOLTS * percent);
+  }
+
+  public void setDrawbridgeSpeed(double percent) {
+    drawbridgeMotor.setVoltage(INDEXER_CONSTANTS.MAX_VOLTS * percent);
+  }
+
   public double getBottomBeltSpeed() {
     return bottom.get();
   }
@@ -70,6 +83,8 @@ public class Indexer extends SubsystemBase {
   public void idle() {
     setTopBeltSpeed(0);
     setBottomBeltSpeed(0);
+    setIntakeWheelSpeed(0);
+    setDrawbridgeSpeed(0);
   }
 
   public void enableTesting() {

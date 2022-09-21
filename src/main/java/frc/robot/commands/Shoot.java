@@ -4,27 +4,24 @@
 
 package frc.robot.commands;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-
-// java base imports
-
-// WPILib imports
-
-// Vendor imports
-
-// In package imports
 import frc.robot.subsystems.Indexer;
 
-public class Index extends CommandBase {
-  /** Creates a new Index. */
-  Indexer indexSub;
-  boolean reject;
-
-  public Index(Indexer indexSub, boolean reject) {
-    this.indexSub = indexSub;
-    this.reject = reject;
-    addRequirements(indexSub);
+public class Shoot extends CommandBase {
+  /** Creates a new Shoot. */
+  Indexer index;
+  WPI_TalonFX shootie;
+  WPI_TalonFX loadie;
+  double time;
+  public Shoot(Indexer index, WPI_TalonFX shootie, WPI_TalonFX loadie) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.index = index;
+    this.shootie = shootie;
+    this.loadie = loadie;
+    addRequirements(index);
   }
 
   // Called when the command is initially scheduled.
@@ -34,18 +31,9 @@ public class Index extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!reject) {
-      if(!indexSub.isTripped()) {
-        // run top motors if it isnt tripped b/c we can store a ball in there
-        indexSub.setTopBeltSpeed(-.25);
-      } else {
-        indexSub.setTopBeltSpeed(0);
-      }
-      indexSub.setBottomBeltSpeed(.25);
-    } else {
-      indexSub.setTopBeltSpeed(.5);
-      indexSub.setBottomBeltSpeed(-.5);
-    }
+    index.setTopBeltSpeed(-1);
+    shootie.setVoltage(-4);
+    loadie.setVoltage(4);
   }
 
   // Called once the command ends or is interrupted.

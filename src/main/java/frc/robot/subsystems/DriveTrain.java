@@ -20,7 +20,7 @@ import frc.robot.Constants.DRIVE_CONSTANTS;
 public class DriveTrain extends SubsystemBase {
   /** Creates a new DriveTrain. */
 
-  public boolean testing = false;
+  public boolean testing = true;
   
   private WPI_TalonFX leftMotorOne;
   private WPI_TalonFX leftMotorTwo;
