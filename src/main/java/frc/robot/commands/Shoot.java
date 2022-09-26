@@ -32,8 +32,8 @@ public class Shoot extends CommandBase {
   @Override
   public void execute() {
     index.setTopBeltSpeed(-1);
-    shootie.setVoltage(-4);
-    loadie.setVoltage(4);
+    shootie.setVoltage(-6);
+    loadie.setVoltage(6);
   }
 
   // Called once the command ends or is interrupted.

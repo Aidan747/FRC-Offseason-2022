@@ -89,7 +89,7 @@ public class RobotContainer {
     xboxBinds.get("B").toggleWhenPressed(new ConditionalCommand(
       new Index(index, true), new Index(index, false), () -> xbox.getRawButton(8))
     );
-    xboxBinds.get("X").whenPressed(new SequentialCommandGroup(
+    xboxBinds.get("X").toggleWhenPressed(new SequentialCommandGroup(
       new Shoot(index, shootie, loadie).andThen(new RunCommand(() -> index.setTopBeltSpeed(-.7), index).until(() -> index.isTripped())),
       new Index(index, true)
     ));
@@ -102,7 +102,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-  }
+  } 
 
   // Configures button bindings using hashmap
   private void configureButtonBindings() {}
