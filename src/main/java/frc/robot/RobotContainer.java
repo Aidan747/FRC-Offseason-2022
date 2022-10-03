@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -94,6 +93,8 @@ public class RobotContainer {
       new Index(index, true)
     ));
   
+    // cheese.
+
     xboxBinds.get("Y").toggleWhenPressed(new RunCommand(() -> index.setIntakeWheelSpeed(.4), index));
 
     xboxBinds.get("LB").toggleWhenPressed(new ConditionalCommand(
