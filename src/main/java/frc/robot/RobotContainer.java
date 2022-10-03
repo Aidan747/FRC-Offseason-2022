@@ -93,8 +93,6 @@ public class RobotContainer {
       new Index(index, true)
     ));
   
-    // cheese.
-
     xboxBinds.get("Y").toggleWhenPressed(new RunCommand(() -> index.setIntakeWheelSpeed(.4), index));
 
     xboxBinds.get("LB").toggleWhenPressed(new ConditionalCommand(
