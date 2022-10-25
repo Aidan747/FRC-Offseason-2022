@@ -7,18 +7,24 @@ import java.util.HashMap;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 // Vendor imports
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.kauailabs.navx.frc.AHRS;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 // in package imports
-import frc.robot.Constants.MOTOR_IO;
+import frc.robot.commands.EncoderDrivePrelim;
+import frc.robot.commands.Index;
+import frc.robot.commands.Shoot;
 import frc.robot.Constants.MISC;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Indexer;
+
 
 public class RobotContainer {
   /* 
@@ -27,14 +33,13 @@ public class RobotContainer {
   */
   // current reference point: Battery = back of robot
   
-  // DriveTrain motors  
-  private WPI_TalonFX leftOne = new WPI_TalonFX(MOTOR_IO.LEFT_ONE);
-  private WPI_TalonFX leftTwo = new WPI_TalonFX(MOTOR_IO.LEFT_TWO);
+  // DriveTrain
+  private DriveTrain drive = new DriveTrain();
 
-  private WPI_TalonFX rightOne = new WPI_TalonFX(MOTOR_IO.RIGHT_ONE);
-  private WPI_TalonFX rightTwo = new WPI_TalonFX(MOTOR_IO.RIGHT_TWO);
-
-  private DriveTrain drive = new DriveTrain(leftOne, leftTwo, rightOne, rightTwo);
+  // Indexer
+  Indexer index = new Indexer();
+  WPI_TalonFX shootie = new WPI_TalonFX(13);
+  WPI_TalonFX loadie = new WPI_TalonFX(12);
 
   // Joystick (is static so it can be ref anywhere)
   public static final Joystick joystick = new Joystick(0);
@@ -58,9 +63,28 @@ public class RobotContainer {
     drive.setDefaultCommand(new RunCommand(
       () -> drive.joyDrive(-joystick.getY(), joystick.getZ()), drive)
     );
+    index.setDefaultCommand(new RunCommand(
+      () -> index.idle(), index)
+    );
+
+    xboxBinds.get("A").toggleWhenPressed(new EncoderDrivePrelim(drive, 2, 4)); // drives 2 meters @ 4 volts
+    xboxBinds.get("B").toggleWhenPressed(new ConditionalCommand(
+      new Index(index, true), new Index(index, false), () -> xbox.getRawButton(8))
+    );
+    xboxBinds.get("X").toggleWhenPressed(new SequentialCommandGroup(
+      new Shoot(index, shootie, loadie).andThen(new RunCommand(() -> index.setTopBeltSpeed(-.7), index).until(() -> index.isTripped())),
+      new Index(index, true)
+    ));
+    
+    xboxBinds.get("Y").toggleWhenPressed(new RunCommand(() -> index.setIntakeWheelSpeed(.4), index));
+
+    xboxBinds.get("LB").toggleWhenPressed(new ConditionalCommand(
+      new RunCommand(() -> index.setDrawbridgeSpeed(-.43), index), new RunCommand(() -> index.setDrawbridgeSpeed(.15), index), () -> xbox.getRawButton(8))
+    );
+
     // Configure the button bindings
     configureButtonBindings();
-  }
+  } 
 
   // Configures button bindings using hashmap
   private void configureButtonBindings() {}
