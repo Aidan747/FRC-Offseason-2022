@@ -16,6 +16,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import frc.robot.subsystems.DriveTrain;
 
 import frc.robot.Constants.DRIVE_CONSTANTS;
+import frc.robot.Constants.MOTOR_IO.DRIVE_IO;
 
 public class DriveTrain extends SubsystemBase {
   /** Creates a new DriveTrain. */
@@ -32,23 +33,29 @@ public class DriveTrain extends SubsystemBase {
   
   private DifferentialDrive drive;
   
-  public DriveTrain(WPI_TalonFX leftMotorOne, WPI_TalonFX leftMotorTwo, WPI_TalonFX rightMotorOne, WPI_TalonFX rightMotorTwo) {
-    this.leftMotorOne = leftMotorOne;
-    this.leftMotorTwo = leftMotorTwo;
-    this.rightMotorOne = rightMotorOne;
-    this.rightMotorTwo = rightMotorTwo;
-    
-    this.left = new MotorControllerGroup(this.leftMotorOne, this.leftMotorTwo);
-    this.right = new MotorControllerGroup(this.rightMotorOne, this.rightMotorTwo);
-    
-    this.drive = new DifferentialDrive(left, right);
-    
+  public DriveTrain() {
+    initialize();
+
     config();
+
     // if we are testing, enable testing mode.
     if (testing) {
       enableTesting();
     }
     
+  }
+
+  public void initialize() {
+    leftMotorOne = new WPI_TalonFX(DRIVE_IO.LEFT_ONE);
+    leftMotorTwo = new WPI_TalonFX(DRIVE_IO.LEFT_TWO);
+  
+    rightMotorOne = new WPI_TalonFX(DRIVE_IO.RIGHT_ONE);
+    rightMotorTwo = new WPI_TalonFX(DRIVE_IO.RIGHT_TWO);
+
+    this.left = new MotorControllerGroup(leftMotorOne, leftMotorTwo);
+    this.right = new MotorControllerGroup(rightMotorOne, rightMotorTwo);
+    
+    this.drive = new DifferentialDrive(left, right);
   }
   
   // we should start doing this with our classes, just so we can easily change configs without the mess in the decl.

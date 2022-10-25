@@ -12,16 +12,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.DigitalInput;
 
 // Vendor imports
 import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 // in package imports
-import frc.robot.Constants.MOTOR_IO.DRIVE_IO;
-import frc.robot.Constants.MOTOR_IO.INDEX_IO;
 import frc.robot.commands.EncoderDrivePrelim;
 import frc.robot.commands.Index;
 import frc.robot.commands.Shoot;
@@ -37,26 +33,13 @@ public class RobotContainer {
   */
   // current reference point: Battery = back of robot
   
-  // DriveTrain motors  
-  private WPI_TalonFX leftOne = new WPI_TalonFX(DRIVE_IO.LEFT_ONE);
-  private WPI_TalonFX leftTwo = new WPI_TalonFX(DRIVE_IO.LEFT_TWO);
-
-  private WPI_TalonFX rightOne = new WPI_TalonFX(DRIVE_IO.RIGHT_ONE);
-  private WPI_TalonFX rightTwo = new WPI_TalonFX(DRIVE_IO.RIGHT_TWO);
-
-  private DriveTrain drive = new DriveTrain(leftOne, leftTwo, rightOne, rightTwo);
+  // DriveTrain
+  private DriveTrain drive = new DriveTrain();
 
   // Indexer
-  WPI_TalonFX indexTop = new WPI_TalonFX(INDEX_IO.TOP);
-  WPI_TalonSRX indexBottom = new WPI_TalonSRX(INDEX_IO.BOTTOM);
-  WPI_TalonSRX intakeWheels = new WPI_TalonSRX(INDEX_IO.INTAKE_WHEELS);
-  WPI_TalonSRX drawbridgeMotor = new WPI_TalonSRX(INDEX_IO.DRAWBRIDGE);
-  DigitalInput beam = new DigitalInput(1); // DIO 4 on roboRIO
-
+  Indexer index = new Indexer();
   WPI_TalonFX shootie = new WPI_TalonFX(13);
   WPI_TalonFX loadie = new WPI_TalonFX(12);
-
-  Indexer index = new Indexer(indexTop, indexBottom, intakeWheels, drawbridgeMotor, beam);
 
   // Joystick (is static so it can be ref anywhere)
   public static final Joystick joystick = new Joystick(0);

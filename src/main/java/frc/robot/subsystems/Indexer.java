@@ -20,6 +20,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 // In package imports
 import frc.robot.Constants.*;
+import frc.robot.Constants.MOTOR_IO.INDEX_IO;
 
 public class Indexer extends SubsystemBase {
   /** Creates a new Indexer. */
@@ -33,18 +34,22 @@ public class Indexer extends SubsystemBase {
 
   private DigitalInput beam;
 
-  public Indexer(WPI_TalonFX top, WPI_TalonSRX bottom, WPI_TalonSRX intakeWheels, WPI_TalonSRX drawbridgeMotor, DigitalInput beam) {
-    this.top = top;
-    this.bottom = bottom;
-    this.beam = beam;
-    this.intakeWheels = intakeWheels;
-    this.drawbridgeMotor = drawbridgeMotor;
+  public Indexer() {
+    initialize();
 
     config();
     
     if (testing) {
       enableTesting();
     }
+  }
+
+  public void initialize() {
+    top = new WPI_TalonFX(INDEX_IO.TOP);
+    bottom = new WPI_TalonSRX(INDEX_IO.BOTTOM);
+    intakeWheels = new WPI_TalonSRX(INDEX_IO.INTAKE_WHEELS);
+    drawbridgeMotor = new WPI_TalonSRX(INDEX_IO.DRAWBRIDGE);
+    beam = new DigitalInput(1); // DIO 4 on roboRIO
   }
 
   public void config() {
