@@ -17,8 +17,7 @@ public final class Constants {
         
         public static final class PTZ_CONTROL_TYPE {
             public static final int FREE = 0;
-            public static final int LOCK = 1;
-            public static final int PANNABLE_LOCK = 2;
+            public static final int PRESET_POINT = 1;
         }
 
         public static final class CAMERA_DEFAULTS {

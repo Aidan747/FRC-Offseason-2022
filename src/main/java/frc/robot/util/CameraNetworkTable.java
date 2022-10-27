@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants.UTIL_CONSTANTS;
 import frc.robot.Constants.UTIL_CONSTANTS.*;
 
 public class CameraNetworkTable {
@@ -35,7 +34,7 @@ public class CameraNetworkTable {
 
     public static void panTiltZoomControl(double pan, double tilt, double zoom) {
         CurrentCamera_VIEW.getNetworkTable().getEntry("xyzoom").setNumberArray(
-            new Number[] {(int)Math.floor(pan * 8), (int)Math.floor(tilt * 8), (int)Math.floor(zoom * 8)}
+            new Number[] {(int)Math.floor(pan * 6), (int)Math.floor(tilt * 6), (int)Math.floor(zoom * 6)}
         );
     }
 
@@ -102,7 +101,7 @@ public class CameraNetworkTable {
         camTable.getEntry("focus").setNumber(CAMERA_DEFAULTS.FOCUS_RESET);
         camTable.getEntry("reboot_request").setBoolean(false);
         camTable.getEntry("camera_PTZ_type").setNumber(PTZ_CONTROL_TYPE.FREE);
-        camTable.getEntry("xyzoom").setNumberArray(new Number[] {CAMERA_DEFAULTS.X_AXIS_ROTATE, CAMERA_DEFAULTS.Y_AXIS_ROTATE, CAMERA_DEFAULTS.ZOOM});
+        camTable.getEntry("record").setBoolean(false);
         camTable.getEntry("server_ready_status").setBoolean(true);
     }
 
