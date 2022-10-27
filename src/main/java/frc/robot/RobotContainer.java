@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.util.CameraNetworkTable;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -21,6 +22,8 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+
+  CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {

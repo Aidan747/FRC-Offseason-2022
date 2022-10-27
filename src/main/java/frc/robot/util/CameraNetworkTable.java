@@ -6,8 +6,8 @@ import java.util.TreeMap;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
-import frc.robot.Constants.*;
+import frc.robot.Constants.UTIL_CONSTANTS;
+import frc.robot.Constants.UTIL_CONSTANTS.*;
 
 public class CameraNetworkTable {
     public static TreeMap<String, CameraNetworkTable> CameraList = new TreeMap<String, CameraNetworkTable>();
@@ -33,6 +33,12 @@ public class CameraNetworkTable {
         }
     }
 
+    public static void panTiltZoomControl(double pan, double tilt, double zoom) {
+        CurrentCamera_VIEW.getNetworkTable().getEntry("xyzoom").setNumberArray(
+            new Number[] {(int)Math.floor(pan * 8), (int)Math.floor(tilt * 8), (int)Math.floor(zoom * 8)}
+        );
+    }
+
     public static void cycleProcessedCamera() {
         SortedMap<String, CameraNetworkTable> mapUp = CameraList.tailMap(CurrentCamera_IMAGE_PROCESSING.id, false);
         if (mapUp.size() == 0) {
@@ -46,6 +52,14 @@ public class CameraNetworkTable {
     public static void setProcessedCamera(CameraNetworkTable camera) {
         CameraTable.getEntry("CURRENT_PROCESSED").setString(camera.id);
         CurrentCamera_IMAGE_PROCESSING = camera;
+    }
+
+    public static CameraNetworkTable getProcessedCamera() {
+        return CurrentCamera_IMAGE_PROCESSING;
+    }
+
+    public static CameraNetworkTable getViewCamera() {
+        return CurrentCamera_VIEW;
     }
 
     public static void setViewCamera(CameraNetworkTable camera) {
@@ -70,16 +84,26 @@ public class CameraNetworkTable {
         CameraList.put(this.id, this);
 
         // Creates a new sub-table in the main CameraTable so our server can index information solely about this camera.
-        this.camTable = CameraTable.getSubTable(cameraLocation + " Camera");
+        this.camTable = CameraTable.getSubTable(id);
         // Set up our "entries" into the NetworkTables, meaning that our jetson can access these values and change the camera's settings based on them.
         setupEntries();
     }
 
     public void setupEntries() {
+        camTable.getEntry("id").setString(id);
         camTable.getEntry("camera_location").setString(cameraLocation);
-        camTable.getEntry("ready_status").setBoolean(true);
-        camTable.getEntry("brightness_setting").setNumber(UTIL_CONSTANTS.DEFAULT_BRIGHTNESS);
-
+        camTable.getEntry("brightness").setNumber(CAMERA_DEFAULTS.DEFAULT_BRIGHTNESS);
+        camTable.getEntry("hue").setNumber(CAMERA_DEFAULTS.DEFAULT_HUE);
+        camTable.getEntry("contrast").setNumber(CAMERA_DEFAULTS.DEFAULT_CONTRAST);
+        camTable.getEntry("saturation").setNumber(CAMERA_DEFAULTS.DEFAULT_SATURATION);
+        camTable.getEntry("max_fps").setNumber(CAMERA_DEFAULTS.MAX_FPS);
+        camTable.getEntry("bitrate_minmax").setNumberArray(new Number[] {CAMERA_DEFAULTS.MIN_BITRATE, CAMERA_DEFAULTS.MAX_BITRATE});
+        camTable.getEntry("resolution_type").setString(CAMERA_DEFAULTS.RESOLUTION);
+        camTable.getEntry("focus").setNumber(CAMERA_DEFAULTS.FOCUS_RESET);
+        camTable.getEntry("reboot_request").setBoolean(false);
+        camTable.getEntry("camera_PTZ_type").setNumber(PTZ_CONTROL_TYPE.FREE);
+        camTable.getEntry("xyzoom").setNumberArray(new Number[] {CAMERA_DEFAULTS.X_AXIS_ROTATE, CAMERA_DEFAULTS.Y_AXIS_ROTATE, CAMERA_DEFAULTS.ZOOM});
+        camTable.getEntry("server_ready_status").setBoolean(true);
     }
 
     public NetworkTable getNetworkTable() {
@@ -88,6 +112,10 @@ public class CameraNetworkTable {
 
     public void setAsProcessedCamera() {
         setProcessedCamera(this);
+    }
+
+    public boolean isReady() {
+        return camTable.getEntry("client_ready_status").getBoolean(false);
     }
 
     public void setAsViewCamera() {

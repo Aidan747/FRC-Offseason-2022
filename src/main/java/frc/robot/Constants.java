@@ -14,6 +14,27 @@ package frc.robot;
  */
 public final class Constants {
     public static final class UTIL_CONSTANTS {
-        public static final int DEFAULT_BRIGHTNESS = 50;
+        
+        public static final class PTZ_CONTROL_TYPE {
+            public static final int FREE = 0;
+            public static final int LOCK = 1;
+            public static final int PANNABLE_LOCK = 2;
+        }
+
+        public static final class CAMERA_DEFAULTS {
+            public static final int DEFAULT_BRIGHTNESS = 50;
+            public static final int DEFAULT_SATURATION = 50;
+            public static final int DEFAULT_HUE = 50;
+            public static final int DEFAULT_CONTRAST = 50;
+            public static final int MAX_FPS = 30;
+            public static final int MIN_BITRATE = 48;
+            public static final int MAX_BITRATE = 448;
+            public static final String RESOLUTION = "1080P";
+            public static final int FOCUS_RESET = -1;
+            public static final int X_AXIS_ROTATE = 0;
+            public static final int Y_AXIS_ROTATE = 0;
+            public static final int ZOOM = 0;
+        }
+        
     }
 }
