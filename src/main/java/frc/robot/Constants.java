@@ -14,6 +14,6 @@ package frc.robot;
  */
 public final class Constants {
     public static final class UTIL_CONSTANTS {
-        
+        public static final int DEFAULT_BRIGHTNESS = 50;
     }
 }
