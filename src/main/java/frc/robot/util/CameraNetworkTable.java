@@ -102,6 +102,7 @@ public class CameraNetworkTable {
         camTable.getEntry("reboot_request").setBoolean(false);
         camTable.getEntry("camera_PTZ_type").setNumber(PTZ_CONTROL_TYPE.FREE);
         camTable.getEntry("record").setBoolean(false);
+        camTable.getEntry("current_goto_point").setNumber(0);
         camTable.getEntry("server_ready_status").setBoolean(true);
     }
 
