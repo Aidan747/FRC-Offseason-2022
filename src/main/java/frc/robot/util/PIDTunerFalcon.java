@@ -14,6 +14,5 @@ public class PIDTunerFalcon {
     }
 
     public void initalize() {
-        subsystem_tab.add(sendable)
     }
 }

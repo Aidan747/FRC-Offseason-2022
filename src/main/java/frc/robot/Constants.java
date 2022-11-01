@@ -4,6 +4,11 @@
 
 package frc.robot;
 
+import java.util.HashMap;
+
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -18,21 +23,50 @@ public final class Constants {
         public static final class PTZ_CONTROL_TYPE {
             public static final int FREE = 0;
             public static final int PRESET_POINT = 1;
+            public static final int CAGE = 2;
+            public static final int PANNABLE_CAGE = 3;
         }
 
         public static final class CAMERA_DEFAULTS {
-            public static final int DEFAULT_BRIGHTNESS = 50;
-            public static final int DEFAULT_SATURATION = 50;
-            public static final int DEFAULT_HUE = 50;
-            public static final int DEFAULT_CONTRAST = 50;
-            public static final int MAX_FPS = 30;
-            public static final int MIN_BITRATE = 48;
-            public static final int MAX_BITRATE = 448;
-            public static final String RESOLUTION = "1080P";
-            public static final int FOCUS_RESET = -1;
-            public static final int X_AXIS_ROTATE = 0;
-            public static final int Y_AXIS_ROTATE = 0;
-            public static final int ZOOM = 0;
+            public static final class NORMAL_DEFAULTS {
+                public static final HashMap<String, Object[]> DEFAULT_INT_MAP;
+                public static final HashMap<String, Object[]> DEFAULT_STRING_MAP;
+                public static final HashMap<String, Object[]> DEFAULT_BOOLEAN_MAP;
+                
+                public static final Object[] AVERAGE_JOE_SLIDER = new Object[] {50, 0, 100};
+                public static final Object[] AVERAGE_JOE_SENDABLE = new Object[] {};
+
+                static {
+                    DEFAULT_INT_MAP = new HashMap<String, Object[]>();
+                    DEFAULT_INT_MAP.put("brightness", AVERAGE_JOE_SLIDER);
+                    DEFAULT_INT_MAP.put("saturation", AVERAGE_JOE_SLIDER);
+                    DEFAULT_INT_MAP.put("hue", AVERAGE_JOE_SLIDER);
+                    DEFAULT_INT_MAP.put("contrast", AVERAGE_JOE_SLIDER);
+                    DEFAULT_INT_MAP.put("max_fps", new Object[] {30, 1, 30});
+                    DEFAULT_INT_MAP.put("focus", new Object[] {0, 0, 1});
+
+                    DEFAULT_STRING_MAP = new HashMap<String, Object[]>();
+                    DEFAULT_STRING_MAP.put("resolution", AVERAGE_JOE_SENDABLE);
+                    DEFAULT_STRING_MAP.put("opencv_filter", AVERAGE_JOE_SENDABLE);
+                    DEFAULT_STRING_MAP.put("ptz_type", AVERAGE_JOE_SENDABLE);
+                    DEFAULT_STRING_MAP.put("auto_position_preset", AVERAGE_JOE_SENDABLE);
+
+
+                    DEFAULT_BOOLEAN_MAP = new HashMap<String, Object[]>();
+                    DEFAULT_BOOLEAN_MAP.put("request_snap", false);
+                    DEFAULT_BOOLEAN_MAP.put("request_reboot", false);
+                    DEFAULT_BOOLEAN_MAP.put("record", false);
+                    DEFAULT_BOOLEAN_MAP.put("server_ready_status", false);
+                }
+            }
+
+            public static final class SPECIAL_DEFAULTS {
+                public static final int DEFAULT_MIN_BITRATE = 48;
+                public static final int DEFAULT_MAX_BITRATE = 448;
+                public static final int DEFAULT_X_AXIS_ROTATE = 0;
+                public static final int DEFAULT_Y_AXIS_ROTATE = 0;
+                public static final int DEFAULT_ZOOM = 0;
+            }
         }
         
     }

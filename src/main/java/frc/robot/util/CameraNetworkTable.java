@@ -1,22 +1,32 @@
 package frc.robot.util;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import frc.robot.Constants.UTIL_CONSTANTS.*;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants.UTIL_CONSTANTS.CAMERA_DEFAULTS.*;
+import frc.robot.util.widgets.NumberSliderWidget;
 
 public class CameraNetworkTable {
     public static TreeMap<String, CameraNetworkTable> CameraList = new TreeMap<String, CameraNetworkTable>();
     public static NetworkTable CameraTable = NetworkTableInstance.getDefault().getTable("CameraTable");
+    public static int DEFAULT_LENGTH = 7;
     public static CameraNetworkTable CurrentCamera_VIEW;
     public static CameraNetworkTable CurrentCamera_IMAGE_PROCESSING;
 
     private String id;
     private String cameraLocation;
     private NetworkTable camTable;
+    private ShuffleboardTab camTab;
+
+    private HashMap<String, NetworkTableEntry> settings = new HashMap<String, NetworkTableEntry>();
 
     public static CameraNetworkTable findCamera(String id) {
         return CameraList.get(id);
@@ -78,6 +88,7 @@ public class CameraNetworkTable {
     public CameraNetworkTable(String id, String cameraLocation) {
         this.id = id;
         this.cameraLocation = cameraLocation;
+        this.camTab = Shuffleboard.getTab(cameraLocation + " Camera");
         
         // Adds our camera to the static camera list. This allows us to avoid the need to pass around the camera object if we need to quickly reference it somewhere.
         CameraList.put(this.id, this);
@@ -91,18 +102,20 @@ public class CameraNetworkTable {
     public void setupEntries() {
         camTable.getEntry("id").setString(id);
         camTable.getEntry("camera_location").setString(cameraLocation);
-        camTable.getEntry("brightness").setNumber(CAMERA_DEFAULTS.DEFAULT_BRIGHTNESS);
-        camTable.getEntry("hue").setNumber(CAMERA_DEFAULTS.DEFAULT_HUE);
-        camTable.getEntry("contrast").setNumber(CAMERA_DEFAULTS.DEFAULT_CONTRAST);
-        camTable.getEntry("saturation").setNumber(CAMERA_DEFAULTS.DEFAULT_SATURATION);
-        camTable.getEntry("max_fps").setNumber(CAMERA_DEFAULTS.MAX_FPS);
-        camTable.getEntry("bitrate_minmax").setNumberArray(new Number[] {CAMERA_DEFAULTS.MIN_BITRATE, CAMERA_DEFAULTS.MAX_BITRATE});
-        camTable.getEntry("resolution_type").setString(CAMERA_DEFAULTS.RESOLUTION);
-        camTable.getEntry("focus").setNumber(CAMERA_DEFAULTS.FOCUS_RESET);
-        camTable.getEntry("reboot_request").setBoolean(false);
-        camTable.getEntry("camera_PTZ_type").setNumber(PTZ_CONTROL_TYPE.FREE);
-        camTable.getEntry("record").setBoolean(false);
-        camTable.getEntry("current_goto_point").setNumber(0);
+        for(Map.Entry<String, Object[]> store : NORMAL_DEFAULTS.DEFAULT_INT_MAP.entrySet()) {
+            new NumberSliderWidget(camTab, camTable, store.getKey(), store.getValue());
+        }
+
+        for(Map.Entry<String, Object[]> store : NORMAL_DEFAULTS.DEFAULT_BOOLEAN_MAP.entrySet()) {
+            camTable.getEntry(store.getKey()).setBoolean((Boolean)store.getValue()[0]);
+        }
+        for(Map.Entry<String, Object[]> store : NORMAL_DEFAULTS.DEFAULT_STRING_MAP.entrySet()) {
+            camTable.getEntry(store.getKey()).setString((String)store.getValue()[0]);
+        }
+
+        camTable.getEntry("bitrate_minmax").setNumberArray(
+            new Number[] {SPECIAL_DEFAULTS.DEFAULT_MIN_BITRATE, SPECIAL_DEFAULTS.DEFAULT_MAX_BITRATE}
+        );
         camTable.getEntry("server_ready_status").setBoolean(true);
     }
 
