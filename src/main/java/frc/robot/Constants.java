@@ -17,21 +17,33 @@ import java.util.HashMap;
 public final class Constants {
     public static final class UTIL_CONSTANTS {
         
-        public static final class PTZ_CONTROL_TYPE {
-            public static final int FREE = 0;
-            public static final int PRESET_POINT = 1;
-            public static final int CAGE = 2;
-            public static final int PANNABLE_CAGE = 3;
+        public static final class OPTIONS {
+            public static final String[] RESOLUTIONS = {
+                "1080P",
+                "720P",
+                "SXGA",
+                "SVCD"
+            };
+            public static final String[] FILTERS = {
+                "no_filter"
+            };
+            public static final String[] PTZ_TYPES = {
+                "free_mode",
+                "move_to_preset"
+            };
+            public static final String[] PRESET_POSITIONS = {
+                "pos0",
+                "pos1"
+            };
         }
 
         public static final class CAMERA_DEFAULTS {
             public static final class NORMAL_DEFAULTS {
                 public static final HashMap<String, Object[]> DEFAULT_INT_MAP;
-                public static final HashMap<String, Object[]> DEFAULT_STRING_MAP;
+                public static final HashMap<String, String[]> DEFAULT_STRING_MAP;
                 public static final HashMap<String, Object[]> DEFAULT_BOOLEAN_MAP;
                 
                 public static final Object[] AVERAGE_JOE_SLIDER = new Object[] {50, 0, 100};
-                public static final Object[] AVERAGE_JOE_SENDABLE = new Object[] {};
 
                 static {
                     DEFAULT_INT_MAP = new HashMap<String, Object[]>();
@@ -42,11 +54,11 @@ public final class Constants {
                     DEFAULT_INT_MAP.put("max_fps", new Object[] {30, 1, 30});
                     DEFAULT_INT_MAP.put("focus", new Object[] {0, 0, 1});
 
-                    DEFAULT_STRING_MAP = new HashMap<String, Object[]>();
-                    DEFAULT_STRING_MAP.put("resolution", AVERAGE_JOE_SENDABLE);
-                    DEFAULT_STRING_MAP.put("opencv_filter", AVERAGE_JOE_SENDABLE);
-                    DEFAULT_STRING_MAP.put("ptz_type", AVERAGE_JOE_SENDABLE);
-                    DEFAULT_STRING_MAP.put("auto_position_preset", AVERAGE_JOE_SENDABLE);
+                    DEFAULT_STRING_MAP = new HashMap<String, String[]>();
+                    DEFAULT_STRING_MAP.put("resolution", OPTIONS.RESOLUTIONS);
+                    DEFAULT_STRING_MAP.put("opencv_filter", OPTIONS.FILTERS);
+                    DEFAULT_STRING_MAP.put("ptz_type", OPTIONS.PTZ_TYPES);
+                    DEFAULT_STRING_MAP.put("auto_position_preset", OPTIONS.PRESET_POSITIONS);
 
                     // default, on shuffle (true = on shuffle, no controller, false = on shuffle as view only but on controller)
                     DEFAULT_BOOLEAN_MAP = new HashMap<String, Object[]>();
@@ -63,7 +75,7 @@ public final class Constants {
                 public static final int DEFAULT_Y_AXIS_ROTATE = 0;
                 public static final int DEFAULT_ZOOM = 0;
             }
+
         }
-        
     }
 }

@@ -1,15 +1,18 @@
 package frc.robot.util;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.UTIL_CONSTANTS.CAMERA_DEFAULTS.*;
-import frc.robot.util.widgets.ButtonWidget;
+import frc.robot.util.widgets.BooleanWidget;
 import frc.robot.util.widgets.NumberSliderWidget;
 
 public class CameraNetworkTable {
@@ -22,6 +25,7 @@ public class CameraNetworkTable {
     private String cameraLocation;
     private NetworkTable camTable;
     private ShuffleboardTab camTab;
+    public HashMap<String, SendableChooser<String>> selectableChoosers = new HashMap<String, SendableChooser<String>>();
 
     public static CameraNetworkTable findCamera(String id) {
         return CameraList.get(id);
@@ -97,6 +101,7 @@ public class CameraNetworkTable {
     public void setupEntries() {
         camTable.getEntry("id").setString(id);
         camTable.getEntry("camera_location").setString(cameraLocation);
+
         for(Map.Entry<String, Object[]> store : NORMAL_DEFAULTS.DEFAULT_INT_MAP.entrySet()) {
             camTable.getEntry(store.getKey()).setNumber((int)store.getValue()[0]);
             new NumberSliderWidget(camTab, camTable, store.getKey(), store.getValue());
@@ -104,12 +109,21 @@ public class CameraNetworkTable {
 
         for(Map.Entry<String, Object[]> store : NORMAL_DEFAULTS.DEFAULT_BOOLEAN_MAP.entrySet()) {
             camTable.getEntry(store.getKey()).setBoolean((Boolean)store.getValue()[0]);
-            new ButtonWidget(camTab, camTable, store.getKey(), store.getValue());
+            new BooleanWidget(camTab, camTable, store.getKey(), store.getValue());
         }
 
-        // for(Map.Entry<String, Object[]> store : NORMAL_DEFAULTS.DEFAULT_STRING_MAP.entrySet()) {
-        //     camTable.getEntry(store.getKey()).setString((String)store.getValue()[0]);
-        // }
+        for(Map.Entry<String, String[]> store : NORMAL_DEFAULTS.DEFAULT_STRING_MAP.entrySet()) {
+            SendableChooser<String> sendie = new SendableChooser<String>();
+            sendie.setDefaultOption(store.getValue()[0], store.getValue()[0]);
+
+            for (int i = 1; i < store.getValue().length; i++) {
+                sendie.addOption(store.getValue()[i], store.getValue()[i]);
+            }
+
+            selectableChoosers.put(store.getKey(), sendie);
+            camTab.addString(store.getKey(), () -> sendie.getSelected())
+                .withWidget(BuiltInWidgets.kTextView);
+        }
 
         camTable.getEntry("bitrate_minmax").setNumberArray(
             new Number[] {SPECIAL_DEFAULTS.DEFAULT_MIN_BITRATE, SPECIAL_DEFAULTS.DEFAULT_MAX_BITRATE}
