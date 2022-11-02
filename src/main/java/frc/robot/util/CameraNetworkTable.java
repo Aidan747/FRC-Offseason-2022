@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -128,6 +129,17 @@ public class CameraNetworkTable {
         camTable.getEntry("bitrate_minmax").setNumberArray(
             new Number[] {SPECIAL_DEFAULTS.DEFAULT_MIN_BITRATE, SPECIAL_DEFAULTS.DEFAULT_MAX_BITRATE}
         );
+
+        camTab.add("bitrate_max", 488)
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 48, "max", 488))
+        .getEntry()
+        .addListener(event -> {
+            camTable.getEntry("bitrate_minmax").setNumberArray(new Number[] {SPECIAL_DEFAULTS.DEFAULT_MIN_BITRATE, 
+                event.getEntry().getNumber(488)
+            });
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);;
+
         camTable.getEntry("server_ready_status").setBoolean(true);
     }
 
