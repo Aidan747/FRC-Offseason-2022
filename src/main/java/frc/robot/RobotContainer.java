@@ -4,11 +4,15 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.util.CameraNetworkTable;
+import frc.robot.util.PIDTunerFalcon;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -23,11 +27,14 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-  CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
+  // CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
+
+  WPI_TalonFX falcon1 = new WPI_TalonFX(1);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
+    new PIDTunerFalcon(falcon1, Shuffleboard.getTab("Tuning Tab"));
     configureButtonBindings();
   }
 
