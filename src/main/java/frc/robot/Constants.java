@@ -6,9 +6,6 @@ package frc.robot;
 
 import java.util.HashMap;
 
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -51,12 +48,11 @@ public final class Constants {
                     DEFAULT_STRING_MAP.put("ptz_type", AVERAGE_JOE_SENDABLE);
                     DEFAULT_STRING_MAP.put("auto_position_preset", AVERAGE_JOE_SENDABLE);
 
-
+                    // default, on shuffle (true = on shuffle, no controller, false = on shuffle as view only but on controller)
                     DEFAULT_BOOLEAN_MAP = new HashMap<String, Object[]>();
-                    DEFAULT_BOOLEAN_MAP.put("request_snap", false);
-                    DEFAULT_BOOLEAN_MAP.put("request_reboot", false);
-                    DEFAULT_BOOLEAN_MAP.put("record", false);
-                    DEFAULT_BOOLEAN_MAP.put("server_ready_status", false);
+                    DEFAULT_BOOLEAN_MAP.put("request_snap", new Object[] {false, false});
+                    DEFAULT_BOOLEAN_MAP.put("request_reboot", new Object[] {false, true});
+                    DEFAULT_BOOLEAN_MAP.put("record", new Object[] {false, true});
                 }
             }
 

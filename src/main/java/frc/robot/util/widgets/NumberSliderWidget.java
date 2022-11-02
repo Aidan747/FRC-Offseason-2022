@@ -2,6 +2,7 @@ package frc.robot.util.widgets;
 
 import java.util.Map;
 
+import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
@@ -17,7 +18,6 @@ public class NumberSliderWidget {
     ShuffleboardTab tab;
     SimpleWidget widget;
 
-
     public NumberSliderWidget(ShuffleboardTab tab, String name, int default_number, int min, int max) {
         this.tab = tab;
         this.widget = tab.add(name, default_number)
@@ -28,18 +28,23 @@ public class NumberSliderWidget {
 
     public NumberSliderWidget(ShuffleboardTab tab, String name, Object[] settings) {
         this.tab = tab;
-        this.widget = tab.add(name, (double)settings[0])
+        this.widget = tab.add(name, settings[0])
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", (double)settings[1], "max", (double)settings[2])
+            .withProperties(Map.of("min", (int)settings[1], "max", (int)settings[2])
         );
     }
 
+    //shuffleboard only nums
     public NumberSliderWidget(ShuffleboardTab tab, NetworkTable table, String name, Object[] settings) {
         this.tab = tab;
-        this.widget = tab.add(name, (double)settings[0])
+        this.widget = tab.add(name, (int)settings[0])
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", (double)settings[1], "max", (double)settings[2]));
-        widget.buildInto(table, null);
+            .withProperties(Map.of("min", (int)settings[1], "max", (int)settings[2]));
+
+        widget.getEntry()
+        .addListener(event -> {
+            table.getEntry(name).setNumber(event.getEntry().getNumber((int)settings[0]));
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
     }
 
     public SimpleWidget place(int x, int y) {
