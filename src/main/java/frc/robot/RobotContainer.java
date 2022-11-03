@@ -13,6 +13,7 @@ import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.util.CameraNetworkTable;
 import frc.robot.util.PIDTunerFalcon;
+import frc.robot.util.widgets.BooleanWidget;
 import edu.wpi.first.wpilibj2.command.Command;
 
 /**
@@ -27,7 +28,7 @@ public class RobotContainer {
 
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-  // CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
+  CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
 
   WPI_TalonFX falcon1 = new WPI_TalonFX(1);
 
