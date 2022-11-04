@@ -1,17 +1,24 @@
 package frc.robot.util;
 
+import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
-import edu.wpi.first.wpilibj2.command.ProxyScheduleCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.TalonPIDBenchmarker;
 
 public class PIDTunerTalon {
@@ -19,16 +26,18 @@ public class PIDTunerTalon {
     ShuffleboardTab subsystem_tab;
     int id;
     int modifier = 1;
-    double CONVERSION_RATE = 2048.0 / 600.0;
+    double CONVERSION_RATE = 600.0 / 2048.0;
 
     boolean sus_mode = false;
     boolean bench_on = false;
+    public String cur_string = "none";
     HashMap<String, Double> save = new HashMap<String, Double>();
-    double setpoint = 0;
     double threshold = 5.0;
-    SuppliedValueWidget<Double> veloGraph;
+    SuppliedValueWidget<double[]> veloGraph;
     SuppliedValueWidget<Double> errorGraph;
-    SimpleWidget time_to_threshold_reporter;
+    NetworkTableEntry time_to_threshold_reporter;
+    SimpleWidget benchWidget;
+    SimpleWidget RPM;
 
 
     public PIDTunerTalon(WPI_TalonFX tuning_motor, ShuffleboardTab tab) {
@@ -39,7 +48,7 @@ public class PIDTunerTalon {
     }
 
     public void initalize() {
-        SimpleWidget RPM = subsystem_tab.add("RPM Control", 0)
+        this.RPM = subsystem_tab.add("RPM Control", 0)
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", 0, "max", 6380));
 
@@ -158,8 +167,12 @@ public class PIDTunerTalon {
         
         bench_mode.getEntry()
         .addListener(event -> {
-            if (!bench_on) {
+            if (DriverStation.isEnabled()) {
                 sus_mode = event.getEntry().getBoolean(false);
+                if (bench_on || benchWidget.getEntry().getBoolean(false)) {
+                    sus_mode = true;
+                    bench_mode.getEntry().setBoolean(true);
+                }
                 if (sus_mode) {
                     save.put("RPM", RPM.getEntry().getDouble(0.0));
                     save.put("kP", kPwidget.getEntry().getDouble(0.0));
@@ -169,17 +182,18 @@ public class PIDTunerTalon {
                     save.put("kD", kDwidget.getEntry().getDouble(0.0));
                     save.put("kDMax", kDMax.getEntry().getDouble(0.0));
                     save.put("FFTune", FFTune.getEntry().getDouble(0.0));
-
                     // ready to start motors on command
                     tuning_motor.set(ControlMode.PercentOutput, 0); // effectively turns off motor.
                 }
-            } else if (!event.getEntry().getBoolean(false)) {
-                bench_mode.getEntry().setBoolean(true);
+            } else {
+                bench_mode.getEntry().setBoolean(false);
+                sus_mode = false;
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        this.time_to_threshold_reporter = subsystem_tab.addPersistent("Time To Threshold", 0)
-        .withWidget(BuiltInWidgets.kTextView);
+        this.time_to_threshold_reporter = subsystem_tab.add("Time", 0)
+        .withWidget(BuiltInWidgets.kTextView)
+        .getEntry();
 
         SimpleWidget thresholder = subsystem_tab.add("Threshold", 5.0)
             .withWidget(BuiltInWidgets.kNumberSlider)
@@ -195,30 +209,38 @@ public class PIDTunerTalon {
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        SimpleWidget benchWidget = subsystem_tab.add("Begin Benchmark", false)
+        this.benchWidget = subsystem_tab.add("Begin Benchmark", false)
         .withWidget(BuiltInWidgets.kToggleButton);
 
         benchWidget.getEntry()
         .addListener(event -> {
-            if (sus_mode && !bench_on) {
+            if (sus_mode && !bench_on && event.getEntry().getBoolean(true)) {
                 bench_on = true;
-                new ProxyScheduleCommand(new TalonPIDBenchmarker(this, tuning_motor, time_to_threshold_reporter, benchWidget));
-            } else if (bench_on) {
+                new ParallelCommandGroup(
+                    new TalonPIDBenchmarker(this, tuning_motor, benchWidget, time_to_threshold_reporter),
+                    new SequentialCommandGroup(
+                        new WaitCommand(3), // .141 seconds off on test 1
+                        new InstantCommand(() -> tuning_motor.getSimCollection().setIntegratedSensorVelocity((int)(2000 * CONVERSION_RATE)))
+                    )
+                ).schedule();
+            } else if (sus_mode && bench_on && !event.getEntry().getBoolean(false)) {
                 benchWidget.getEntry().setBoolean(true);
+            } else {
+                benchWidget.getEntry().setBoolean(false);
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
     }
 
     public void graphSetups() {
-        this.veloGraph = subsystem_tab.addNumber("Current Velocity", () -> tuning_motor.getSelectedSensorVelocity())
+        this.veloGraph = subsystem_tab.addDoubleArray("Current Velocity", () -> getGraphSetpoints())
             .withWidget(BuiltInWidgets.kGraph)
-            .withProperties(Map.of("Visible time", 60)
+            .withProperties(Map.of("Visible time", 20, "Unit", "RPM")
         );
 
-        this.errorGraph = subsystem_tab.addNumber("Current Error", () -> tuning_motor.getClosedLoopError())
+        this.errorGraph = subsystem_tab.addNumber("Current Error", () -> tuning_motor.getErrorDerivative() / CONVERSION_RATE)
             .withWidget(BuiltInWidgets.kGraph)
-            .withProperties(Map.of("Visible time", 60)
+            .withProperties(Map.of("Visible time", 20, "Unit", "RPM")
         );
     }
 
@@ -228,6 +250,15 @@ public class PIDTunerTalon {
 
     public double getRPMSetpoint() {
         return save.get("RPM");
+    }
+
+    public double[] getGraphSetpoints() {
+        return new double[] {tuning_motor.getSelectedSensorVelocity() / CONVERSION_RATE, RPM.getEntry().getDouble(0.0)};
+    }
+
+
+    public String getString() {
+        return cur_string;
     }
 
     public double getThreshold() {

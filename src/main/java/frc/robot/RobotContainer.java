@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.GenericHID;
@@ -30,11 +31,17 @@ public class RobotContainer {
   CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
 
   WPI_TalonFX falcon1 = new WPI_TalonFX(1);
+  TalonFXSimCollection simmed;
+  
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
+    simmed = falcon1.getSimCollection();
+    simmed.setIntegratedSensorVelocity((int)(1000.0 * 600.0/2048.0));
+
     new PIDTunerTalon(falcon1, Shuffleboard.getTab("Tuning Tab"));
+
     configureButtonBindings();
   }
 
