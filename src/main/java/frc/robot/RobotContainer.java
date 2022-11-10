@@ -4,17 +4,18 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+import java.util.HashMap;
+
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.util.CameraNetworkTable;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.util.PIDTunerTalon;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,23 +25,30 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  //CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
+  //public static final XboxController xbox = new XboxController(1);
 
-  CameraNetworkTable camera1 = new CameraNetworkTable("10.43.65.34", "Indexer");
+  WPI_TalonFX falcon1 = new WPI_TalonFX(13);
+  ShuffleboardTab tab = Shuffleboard.getTab("Tuning Tab");
+  PIDTunerTalon talon_tuner1 = new PIDTunerTalon(falcon1, tab);
 
-  WPI_TalonFX falcon1 = new WPI_TalonFX(1);
-  TalonFXSimCollection simmed;
+  // TalonFXSimCollection simmed;
   
+  public HashMap<String, JoystickButton> xboxBinds = new HashMap<String, JoystickButton>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
-    simmed = falcon1.getSimCollection();
-    simmed.setIntegratedSensorVelocity((int)(1000.0 * 600.0/2048.0));
+    // simmed = falcon1.getSimCollection();
+    // simmed.setIntegratedSensorVelocity((int)(1000.0 * 600.0/2048.0));
+    // for (int i = 1; i < MISC.KEY_NAMES.length; i++) {
+    //   xboxBinds.put(MISC.KEY_NAMES[i], new JoystickButton(xbox, i));
+    // }
 
-    new PIDTunerTalon(falcon1, Shuffleboard.getTab("Tuning Tab"));
+    //xboxBinds.get("A").whenPressed(new RunCommand(() -> CameraNetworkTable.cycleView()));
+
 
     configureButtonBindings();
   }
@@ -62,6 +70,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return new InstantCommand();
   }
 }

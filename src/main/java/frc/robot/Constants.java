@@ -15,8 +15,7 @@ import java.util.HashMap;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final class UTIL_CONSTANTS {
-        
+    public static final class UTIL_CONSTANTS { 
         public static final class OPTIONS {
             public static final String[] RESOLUTIONS = {
                 "1080P",
@@ -75,7 +74,20 @@ public final class Constants {
                 public static final int DEFAULT_Y_AXIS_ROTATE = 0;
                 public static final int DEFAULT_ZOOM = 0;
             }
-
         }
+    }
+
+    public static final class MISC {
+        public static final String[] KEY_NAMES = {
+            "null",
+            "X",
+            "A",
+            "B",
+            "Y",
+            "LB",
+            "RB",
+            "back",
+            "start"
+        };
     }
 }

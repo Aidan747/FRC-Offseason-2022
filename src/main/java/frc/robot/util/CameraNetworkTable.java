@@ -33,12 +33,16 @@ public class CameraNetworkTable {
     }
 
     public static void cycleView() {
-        SortedMap<String, CameraNetworkTable> mapUp = CameraList.tailMap(CurrentCamera_VIEW.id, false);
-        if (mapUp.size() == 0) {
-            // we've reached the end of the map
+        if (CurrentCamera_VIEW == null && CameraList.size() != 0) {
             setViewCamera(CameraList.firstEntry().getValue());
-        } else {
-            setViewCamera(mapUp.get(mapUp.firstKey()));
+        } else if(CurrentCamera_VIEW != null) {
+            SortedMap<String, CameraNetworkTable> mapUp = CameraList.tailMap(CurrentCamera_VIEW.id, true);
+            if (mapUp.size() == 0) {
+                // we've reached the end of the map
+                setViewCamera(CameraList.firstEntry().getValue());
+            } else {
+                setViewCamera(mapUp.get(mapUp.firstKey()));
+            }
         }
     }
 
@@ -49,12 +53,16 @@ public class CameraNetworkTable {
     }
 
     public static void cycleProcessedCamera() {
-        SortedMap<String, CameraNetworkTable> mapUp = CameraList.tailMap(CurrentCamera_IMAGE_PROCESSING.id, false);
-        if (mapUp.size() == 0) {
-            // we've reached the end of the map
+        if (CurrentCamera_IMAGE_PROCESSING == null && CameraList.size() != 0) {
             setProcessedCamera(CameraList.firstEntry().getValue());
-        } else {
-            setProcessedCamera(mapUp.get(mapUp.firstKey()));
+        } else if(CurrentCamera_IMAGE_PROCESSING != null) {
+            SortedMap<String, CameraNetworkTable> mapUp = CameraList.tailMap(CurrentCamera_IMAGE_PROCESSING.id, false);
+            if (mapUp.size() == 0) {
+                // we've reached the end of the map
+                setProcessedCamera(CameraList.firstEntry().getValue());
+            } else {
+                setProcessedCamera(mapUp.get(mapUp.firstKey()));
+            }
         }
     }
 

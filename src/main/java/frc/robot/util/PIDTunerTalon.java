@@ -1,17 +1,17 @@
 package frc.robot.util;
 
-import java.sql.Driver;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.EntryListenerFlags;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.SimpleWidget;
 import edu.wpi.first.wpilibj.shuffleboard.SuppliedValueWidget;
@@ -38,7 +38,9 @@ public class PIDTunerTalon {
     NetworkTableEntry time_to_threshold_reporter;
     SimpleWidget benchWidget;
     SimpleWidget RPM;
-
+    SimpleWidget kPwidgetDirect;
+    SimpleWidget kIwidgetDirect;
+    SimpleWidget kDwidgetDirect;
 
     public PIDTunerTalon(WPI_TalonFX tuning_motor, ShuffleboardTab tab) {
         this.tuning_motor = tuning_motor;
@@ -48,20 +50,38 @@ public class PIDTunerTalon {
     }
 
     public void initalize() {
-        this.RPM = subsystem_tab.add("RPM Control", 0)
+        // RPM
+        ShuffleboardLayout RPMlayout = subsystem_tab.getLayout("RPM Settings", BuiltInLayouts.kList)
+        .withSize(4, 2)
+        .withPosition(3, 3);
+
+        SimpleWidget RPMDirect = RPMlayout.add("RPM Control Direct", 0);
+
+        RPMDirect.getEntry().addListener(event -> {
+            if (!sus_mode) {
+                tuning_motor.set(ControlMode.Velocity, event.getEntry().getDouble(0) / CONVERSION_RATE);
+                RPM.getEntry().setNumber(event.getEntry().getDouble(0));
+            } else {
+                RPM.getEntry().setDouble(save.get("RPM"));
+            }
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+
+        this.RPM = RPMlayout.add("RPM Control Slider", 0)
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", 0, "max", 6380));
 
         RPM.getEntry()
             .addListener(event -> {
                 if (!sus_mode) {
-                    tuning_motor.set(ControlMode.Velocity, event.getEntry().getDouble(0) * CONVERSION_RATE);
+                    tuning_motor.set(ControlMode.Velocity, event.getEntry().getDouble(0) / CONVERSION_RATE);
+                    RPMDirect.getEntry().setNumber(event.getEntry().getDouble(0));
                 } else {
-                    RPM.getEntry().setDouble(save.get("RPM"));
+                    RPMDirect.getEntry().setDouble(save.get("RPM"));
                 }
             }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        SimpleWidget inverter = subsystem_tab.add("Invert Direction?", false)
+
+        SimpleWidget inverter = RPMlayout.add("Invert Direction?", false)
             .withWidget(BuiltInWidgets.kToggleButton);
 
         inverter.getEntry()
@@ -69,100 +89,115 @@ public class PIDTunerTalon {
                 tuning_motor.setInverted(event.getEntry().getBoolean(false));
             }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
         
-        SimpleWidget kPwidget = subsystem_tab.add("kP", 0)
+        
+        // kP
+        ShuffleboardLayout kPLayout = subsystem_tab.getLayout("kP Settings", BuiltInLayouts.kList)
+        .withSize(2, 2)
+        .withPosition(0, 0);
+
+        SimpleWidget kPwidget = kPLayout.add("kP", 0)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 20));
-            
+            .withProperties(Map.of("min", 0, "max", 100));
+        
         kPwidget.getEntry()
             .addListener(event -> {
                 if (!sus_mode) {
                     tuning_motor.config_kP(0, event.getEntry().getDouble(0), 30);
+                    kPwidgetDirect.getEntry().setNumber(event.getEntry().getDouble(0));
                 } else {
                     kPwidget.getEntry().setDouble(save.get("kP"));
                 }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        SimpleWidget kPMax = subsystem_tab.add("kP Max", 20)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 200));
-        
-        kPMax.getEntry()
-            .addListener(event -> {
-                if (!sus_mode) {
-                    kPwidget.withProperties(Map.of("min", 0, "max", event.getEntry().getDouble(20)));
-                } else {
-                    kPMax.getEntry().setDouble(save.get("kPMax"));
-                }
-            }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+        this.kPwidgetDirect = kPLayout.add("kP Direct", 0);
+        kPwidgetDirect.getEntry().addListener(event -> {
+            if (!sus_mode) {
+                tuning_motor.config_kP(0, event.getEntry().getDouble(0), 30);
+                kPwidget.getEntry().setNumber(event.getEntry().getDouble(0));
+            } else {
+                kPwidgetDirect.getEntry().setDouble(save.get("kP"));
+            }
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        SimpleWidget kIwidget = subsystem_tab.add("kI", 0)
+        // kI
+        ShuffleboardLayout kILayout = subsystem_tab.getLayout("kI Settings", BuiltInLayouts.kList)
+        .withPosition(8, 3)
+        .withSize(2,2);
+
+        SimpleWidget kIwidget = kILayout.add("kI", 0)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 20));
-            
+            .withProperties(Map.of("min", 0, "max", 100));
+        
         kIwidget.getEntry()
             .addListener(event -> {
                 if (!sus_mode) {
                     tuning_motor.config_kI(0, event.getEntry().getDouble(0), 30);
+                    kIwidgetDirect.getEntry().setNumber(event.getEntry().getDouble(0));
                 } else {
                     kIwidget.getEntry().setDouble(save.get("kI"));
                 }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        SimpleWidget kIMax = subsystem_tab.add("kI Max", 20)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 200));
+        this.kIwidgetDirect = kILayout.add("kI Direct", 0);
+        kIwidgetDirect.getEntry().addListener(event -> {
+            if (!sus_mode) {
+                tuning_motor.config_kI(0, event.getEntry().getDouble(0), 30);
+                kIwidget.getEntry().setNumber(event.getEntry().getDouble(0));
+            } else {
+                kIwidgetDirect.getEntry().setDouble(save.get("kI"));
+            }
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        kIMax.getEntry()
-            .addListener(event -> {
-                if (!sus_mode) {
-                    kIwidget.withProperties(Map.of("min", 0, "max", event.getEntry().getDouble(20)));
-                } else {
-                    kIMax.getEntry().setDouble(save.get("kIMax"));
-                }
-            }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+        // kD
+        ShuffleboardLayout kDLayout = subsystem_tab.getLayout("kD Settings", BuiltInLayouts.kList)
+        .withPosition(0, 2)
+        .withSize(2, 2);
 
-        SimpleWidget kDwidget = subsystem_tab.add("kD", 0)
+        SimpleWidget kDwidget = kDLayout.add("kD", 0)
             .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 20));
-            
+            .withProperties(Map.of("min", 0, "max", 100));
+        
         kDwidget.getEntry()
             .addListener(event -> {
                 if (!sus_mode) {
                     tuning_motor.config_kD(0, event.getEntry().getDouble(0), 30);
+                    kDwidgetDirect.getEntry().setNumber(event.getEntry().getDouble(0));
                 } else {
                     kDwidget.getEntry().setDouble(save.get("kD"));
                 }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        SimpleWidget kDMax = subsystem_tab.add("kD Max", 20)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 200));
-
-        kDMax.getEntry()
-            .addListener(event -> {
-                if (!sus_mode) {
-                    kDwidget.withProperties(Map.of("min", 0, "max", event.getEntry().getDouble(20)));
-                } else {
-                    kDMax.getEntry().setDouble(save.get("kDMax"));
-                }
-            }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+        this.kDwidgetDirect = kDLayout.add("kD Direct", 0);
+        kDwidgetDirect.getEntry().addListener(event -> {
+            if (!sus_mode) {
+                tuning_motor.config_kD(0, event.getEntry().getDouble(0), 30);
+                kDwidget.getEntry().setNumber(event.getEntry().getDouble(0));
+            } else {
+                kDwidgetDirect.getEntry().setDouble(save.get("kD"));
+            }
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+    
+        // FF
+        ShuffleboardLayout FFLayout = subsystem_tab.getLayout("FF Settings", BuiltInLayouts.kList)
+        .withSize(2, 1)
+        .withPosition(0, 4);
         
-        SimpleWidget FFTune = subsystem_tab.add("FF Tune", 0)
-            .withWidget(BuiltInWidgets.kNumberSlider)
-            .withProperties(Map.of("min", 0, "max", 20));
-
-        FFTune.getEntry()
-            .addListener(event -> {
-                if (!sus_mode) {
-                    tuning_motor.config_kF(0, event.getEntry().getDouble(0), 30);
-                } else {
-                    FFTune.getEntry().setDouble(save.get("FFTune"));
-                }
-            }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
+        SimpleWidget FFTune = FFLayout.add("FF Tune Direct", 0);
+        FFTune.getEntry().addListener(event -> {
+            if (!sus_mode) {
+                tuning_motor.config_kF(0, event.getEntry().getDouble(0), 30);
+            } else {
+                kDwidget.getEntry().setDouble(save.get("FFTune"));
+            }
+        }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
         
         graphSetups();
 
-        SimpleWidget bench_mode = subsystem_tab.add("Benchmark Mode", false)
+        ShuffleboardLayout benchmode_layout = subsystem_tab.getLayout("Bench Settings", BuiltInLayouts.kList)
+        .withSize(2, 3)
+        .withPosition(8, 0);
+
+        SimpleWidget bench_mode = benchmode_layout.add("Benchmark Mode", false)
         .withWidget(BuiltInWidgets.kToggleButton);
         
         bench_mode.getEntry()
@@ -176,11 +211,8 @@ public class PIDTunerTalon {
                 if (sus_mode) {
                     save.put("RPM", RPM.getEntry().getDouble(0.0));
                     save.put("kP", kPwidget.getEntry().getDouble(0.0));
-                    save.put("kPMax", kPMax.getEntry().getDouble(0.0));
                     save.put("kI", kIwidget.getEntry().getDouble(0.0));
-                    save.put("kIMax", kIMax.getEntry().getDouble(0.0));
                     save.put("kD", kDwidget.getEntry().getDouble(0.0));
-                    save.put("kDMax", kDMax.getEntry().getDouble(0.0));
                     save.put("FFTune", FFTune.getEntry().getDouble(0.0));
                     // ready to start motors on command
                     tuning_motor.set(ControlMode.PercentOutput, 0); // effectively turns off motor.
@@ -191,11 +223,11 @@ public class PIDTunerTalon {
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        this.time_to_threshold_reporter = subsystem_tab.add("Time", 0)
+        this.time_to_threshold_reporter = benchmode_layout.add("Time", 0)
         .withWidget(BuiltInWidgets.kTextView)
         .getEntry();
 
-        SimpleWidget thresholder = subsystem_tab.add("Threshold", 5.0)
+        SimpleWidget thresholder = benchmode_layout.add("Threshold", 5.0)
             .withWidget(BuiltInWidgets.kNumberSlider)
             .withProperties(Map.of("min", .01, "max", 20) // threshold should not exceed 20%.. seriously.
         );
@@ -209,7 +241,7 @@ public class PIDTunerTalon {
             }
         }, EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);
 
-        this.benchWidget = subsystem_tab.add("Begin Benchmark", false)
+        this.benchWidget = benchmode_layout.add("Begin Benchmark", false)
         .withWidget(BuiltInWidgets.kToggleButton);
 
         benchWidget.getEntry()
@@ -238,7 +270,7 @@ public class PIDTunerTalon {
             .withProperties(Map.of("Visible time", 20, "Unit", "RPM")
         );
 
-        this.errorGraph = subsystem_tab.addNumber("Current Error", () -> tuning_motor.getErrorDerivative() / CONVERSION_RATE)
+        this.errorGraph = subsystem_tab.addNumber("Current Error", () -> tuning_motor.getErrorDerivative() * CONVERSION_RATE)
             .withWidget(BuiltInWidgets.kGraph)
             .withProperties(Map.of("Visible time", 20, "Unit", "RPM")
         );
@@ -253,7 +285,7 @@ public class PIDTunerTalon {
     }
 
     public double[] getGraphSetpoints() {
-        return new double[] {tuning_motor.getSelectedSensorVelocity() / CONVERSION_RATE, RPM.getEntry().getDouble(0.0)};
+        return new double[] {tuning_motor.getSelectedSensorVelocity() * CONVERSION_RATE, RPM.getEntry().getDouble(0.0)};
     }
 
 
